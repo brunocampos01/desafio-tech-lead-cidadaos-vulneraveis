@@ -2,14 +2,16 @@
 
 Sistema de monitoramento de chamados **1746**: pipeline dbt → API FastAPI → frontend Next.js.
 
-Decisões técnicas detalhadas: `[docs/decisoes.md](docs/decisoes.md)`
+![Dashboard — Programa Pequenos Cariocas](docs/tela_dash.png)
+
+Decisões técnicas detalhadas: [docs/decisoes.md](docs/decisoes.md)
 
 ## Pré-requisitos
 
-- **Python 3.12 ou 3.13** — dependências em `[requirements.txt](requirements.txt)` (pipeline, backend, BigQuery, testes)
+- **Python 3.12 ou 3.13** — dependências em [requirements.txt](requirements.txt) (pipeline, backend, BigQuery, testes)
 - **Node.js 20+** (frontend)
 
-## Quick start (local)
+## Como rodar (centralizado): Quick start (local)
 
 Se ainda não tiver os dados em `data/raw/`, veja [Download de dados no BigQuery](#download-de-dados-no-bigquery).
 
@@ -128,7 +130,7 @@ source .venv/bin/activate
 python pipeline/scripts/generate_schema_docs.py --billing-project <PROJECT_ID>
 ```
 
-Gera `[docs/bigquery_schemas.md](docs/bigquery_schemas.md)` (colunas, tipos e descrições das 5 tabelas acima).
+Gera [docs/bigquery_schemas.md](docs/bigquery_schemas.md) (colunas, tipos e descrições das 5 tabelas acima).
 
 ## Testes (local)
 
@@ -152,6 +154,4 @@ Dispara em **push** e **pull request** para `main` / `master`.
 | **backend** | `ruff check backend/` + `pytest` (auth e RBAC; sem DuckDB) |
 | **frontend** | `npm ci`, `npm run lint`, `npm run build` (Node 20) |
 
-Testes de contrato de dados (`test_chamados.py`) rodam localmente após `dbt run` — ver [Testes (local)](#testes-local).
-
-NOTE: os commits estao todos padronizados ß.
+NOTE: os commits estao todos padronizados.

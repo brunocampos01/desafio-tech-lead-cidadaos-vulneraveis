@@ -136,41 +136,15 @@ Usuário autenticado ou não cai no dashboard (que redireciona para login se a s
 
 **Arquivo:** `app/login/page.tsx`
 
+![Tela de login](../docs/login.png)
 
-
-```
-Formulário email/senha
-       │
-       ▼
-POST /auth/token
-       │
-       ▼
-saveTokens() → localStorage
-       │
-       ▼
-router.push("/dashboard")
-```
+Formulário e-mail/senha → `POST /auth/token` → `saveTokens()` → redirect `/dashboard`.
 
 ### `/dashboard`
 
 **Arquivos:** `app/dashboard/page.tsx` + `components/dashboard/dashboard-view.tsx`
 
-
-
-```
-AppShell (guard de sessão)
-       │
-       ├─ ChamadosSearchBar (busca + datas, igual chamados)
-       ├─ ChamadosFilters ──► GET /api/v1/chamados/filters (cascata)
-       │
-       └─ useQuery ──► GET /api/v1/dashboard?q=...&secretaria=...&tipo=...
-                │
-                ▼
-           DashboardView
-                ├─ 3 KPI cards (total, taxa no prazo, tempo médio)
-                ├─ LineChart — evolução temporal (legenda)
-                └─ BarChart — volume por secretaria
-```
+![Dashboard](../docs/dashboard.png)
 
 **Comportamento:**
 
@@ -182,37 +156,17 @@ AppShell (guard de sessão)
 
 **Arquivos:** `app/chamados/page.tsx` + `components/chamados/chamados-view.tsx`
 
+![Listagem de chamados](../docs/chamados.png)
 
-
-```
-AppShell
-       │
-       └─ ChamadosView
-              ├─ ChamadosSearchBar (busca + datas)
-              ├─ ChamadosFilters (cascata: secretaria, tipo, subtipo, status, situação)
-              ├─ Tabela paginada (20 itens/página)
-              │     └─ Colunas ordenáveis: Data início, Tipo, Secretaria, Status, No prazo
-              ├─ Paginação Anterior / Próxima
-              └─ Exportar CSV ──► GET /api/v1/export (filtros + sort aplicados)
-```
+Tabela paginada, filtros em cascata, busca `q`, ordenação por coluna e export CSV (`GET /api/v1/export`).
 
 ### `/usuarios`
 
 **Arquivo:** `app/usuarios/page.tsx` (conteúdo em `UsuariosContent`, mesma página)
 
-
+![Gestão de usuários](../docs/usuarios.png)
 
 Visível no menu **Usuários** apenas para `admin` e `super_admin` (`AppShell` + `useAuth().isAdmin`). Operadores não veem o link; se acessarem a URL diretamente, veem mensagem de acesso restrito.
-
-```
-AppShell
-       │
-       └─ UsuariosContent
-              ├─ useQuery ──► GET /api/v1/users
-              ├─ Cards por usuário (nome, e-mail, papel atual)
-              ├─ Conceder papel ──► POST /api/v1/users/{id}/roles
-              └─ Rebaixar para operador ──► DELETE /api/v1/users/{id}/roles
-```
 
 **Papéis que o ator pode conceder** (sem escalar acima do próprio nível):
 
@@ -257,6 +211,6 @@ AppShell
 | Exportar filtrados               | filtros + ordenação da tabela                                            |
 | Controle de acesso (RBAC)        | `/usuarios` — listar, conceder e rebaixar papéis (`admin`/`super_admin`) |
 | Next.js 14+ App Router           | rotas em `app/login`, `app/dashboard`, `app/chamados`, `app/usuarios`    |
-| Entregue: rodando local          | Setup e execução: `[README.md](../README.md#3-frontend)`                 |
+| Entregue: rodando local          | Setup e execução: [README.md](../README.md#3-frontend)                 |
 
 

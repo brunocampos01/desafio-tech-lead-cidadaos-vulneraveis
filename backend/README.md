@@ -1,7 +1,5 @@
 # Backend — FastAPI
 
-API REST para monitoramento de chamados 1746 / PIC.
-
 Detalhes de cache, concorrência DuckDB, autenticação (fluxo + diagramas) e Keycloak: [`docs/decisoes.md`](../docs/decisoes.md).
 
 ## Variáveis de ambiente
@@ -44,7 +42,7 @@ A API lê o DuckDB produzido pelo dbt (`main_mart.*`). O frontend consome apenas
 | `GET` | `/api/v1/export` | Exportação CSV de todas as linhas **filtradas** (sem paginação) |
 | `GET` | `/api/v1/auth` | Validação do token (padrão dados.rio) |
 
-Autenticação mock: `POST /auth/token` com email/senha. Usuários de teste, RBAC e fluxo completo: [`docs/decisoes.md`](../docs/decisoes.md#4-controle-de-acesso-rbac--6).
+Autenticação mock: `POST /auth/token` com email/senha. Usuários de teste, RBAC e fluxo completo: [`docs/decisoes.md`](../docs/decisoes.md#4-controle-de-acesso).
 
 ### Parâmetros de query (`ChamadosQueryParams`)
 
@@ -84,15 +82,6 @@ GET /api/v1/dashboard?secretaria=SME&data_inicio_from=2024-06-01
 # Export CSV com filtros atuais (sem page/page_size)
 GET /api/v1/export?secretaria=SMAS&situacao=Resolvido
 ```
-
-### Tabelas dbt consumidas
-
-| Tabela | Endpoint |
-|--------|----------|
-| `main_mart.mart_chamados` | Listagem, filtros, export; base do dashboard **com** filtros |
-| `main_mart.mart_dashboard_pic_kpis` | Dashboard **sem** filtros + meta `atualizado_em` |
-| `main_mart.mart_dashboard_pic_temporal` | Dashboard **sem** filtros |
-| `main_mart.mart_dashboard_by_secretaria` | Gráfico por secretaria (PIC) |
 
 ## Autenticação
 

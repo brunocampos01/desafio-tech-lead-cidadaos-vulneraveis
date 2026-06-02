@@ -111,13 +111,6 @@ erDiagram
 
 `chamado` **não** possui FK direta para `regiao_administrativa`, `area_planejamento` ou `subprefeitura` no datalake — o vínculo territorial é **sempre via** `bairro` (modelo em estrela).
 
-**Fora do ER (não é relacionamento entre tabelas no `datario`):**
-
-| Mecanismo | Onde |
-|-----------|------|
-| `longitude` + `latitude` → `ST_Within(geometry_wkt)` | Fallback em `int_chamados_enriched` quando `id_bairro` falha |
-| `chamado.tipo` → `secretaria` | Seed dbt `secretaria_tipo_mapping.csv` |
-
 ## Estrutura do diretório
 
 ```
@@ -154,7 +147,7 @@ Entrada esperada (gitignored):
 ```
 data/raw/
 ├── chamado.parquet                 # obrigatório
-├── bairro.parquet                  # geo (polígonos WKT)
+├── bairro.parquet
 ├── regiao_administrativa.parquet
 ├── area_planejamento.parquet
 └── subprefeitura.parquet
@@ -345,24 +338,24 @@ Contratos em [`models/mart/schema.yml`](models/mart/schema.yml): garantem chaves
 
 ### Staging e intermediate
 
-| Modelo | Coluna | Teste | O que valida |
-|--------|--------|-------|----------------|
-| `stg_chamado` | `id_chamado` | `unique`, `not_null` | PK do 1746 após filtro `data_particao >= 2023-01-01` |
-| `stg_chamado` | `data_particao` | `not_null` | Partição obrigatória no recorte temporal |
-| `int_chamados_enriched` | `id_chamado` | `unique`, `not_null` | Uma linha por chamado após geo + seed |
-| `int_chamados_enriched` | `secretaria` | `not_null`, `accepted_values` | Domínio completo: `SMS`, `SME`, `SMAS`, `Outros` |
-| `int_pic_chamados` | `secretaria` | `not_null`, `accepted_values` | Recorte PIC: só `SMS`, `SME`, `SMAS` |
+| Modelo | Coluna | Teste |
+|--------|--------|-------|
+| `stg_chamado` | `id_chamado` | `unique`, `not_null` |
+| `stg_chamado` | `data_particao` | `not_null` |
+| `int_chamados_enriched` | `id_chamado` | `unique`, `not_null` |
+| `int_chamados_enriched` | `secretaria` | `not_null`, `accepted_values` |
+| `int_pic_chamados` | `secretaria` | `not_null`, `accepted_values` |
 
 ### Marts com testes de coluna
 
-| Modelo | Coluna | Teste | O que valida |
-|--------|--------|-------|----------------|
-| `mart_chamados` | `id_chamado` | `unique`, `not_null` | Detalhe da API (lista/export) sem duplicata |
-| `mart_dashboard_by_secretaria` | `secretaria` | `not_null`, `accepted_values` | Agregado legado por secretaria PIC |
-| `mart_dashboard_pic_kpis` | `total_chamados` | `not_null` | KPI global e `atualizado_em` no meta da API |
-| `mart_dashboard_pic_temporal` | `periodo` | `not_null` | Série mensal com bucket definido |
-| `mart_dashboard_pic_temporal` | `total_chamados` | `not_null` | Volume por período não nulo |
-| `mart_dashboard_top_tipos_pic` | `tipo` | `not_null` | Ranking de tipos com rótulo |
+| Modelo | Coluna | Teste |
+|--------|--------|-------|
+| `mart_chamados` | `id_chamado` | `unique`, `not_null` |
+| `mart_dashboard_by_secretaria` | `secretaria` | `not_null`, `accepted_values` |
+| `mart_dashboard_pic_kpis` | `total_chamados` | `not_null` |
+| `mart_dashboard_pic_temporal` | `periodo` | `not_null` |
+| `mart_dashboard_pic_temporal` | `total_chamados` | `not_null` |
+| `mart_dashboard_top_tipos_pic` | `tipo` | `not_null` |
 
 ## Atendimento aos requisitos do enunciado
 
