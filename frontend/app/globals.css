@@ -1,0 +1,39 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 210 40% 98%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  --border: 214 32% 91%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --chart-grid: 214 32% 91%;
+  --chart-axis: 215 16% 47%;
+  --chart-primary: 221 83% 53%;
+  --chart-secondary: 142 71% 45%;
+}
+
+.dark {
+  --background: 222 47% 7%;
+  --foreground: 210 40% 98%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 222 47% 11%;
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  --border: 217 33% 20%;
+  --card: 222 47% 10%;
+  --card-foreground: 210 40% 98%;
+  --chart-grid: 217 33% 22%;
+  --chart-axis: 215 20% 65%;
+  --chart-primary: 217 91% 60%;
+  --chart-secondary: 142 76% 46%;
+}
+
+body {
+  @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+}
