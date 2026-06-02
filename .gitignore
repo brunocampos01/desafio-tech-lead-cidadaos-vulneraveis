@@ -1,0 +1,42 @@
+# Data & secrets
+data/raw/
+data/processed/
+*.duckdb
+*.duckdb.wal
+.env
+.env.local
+.env*.local
+*.pem
+credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# dbt
+pipeline/target/
+pipeline/dbt_packages/
+pipeline/logs/
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+
+# IDE & OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Build artifacts
+dist/
+build/
