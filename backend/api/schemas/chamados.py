@@ -26,7 +26,10 @@ class ChamadoItem(BaseModel):
 class ChamadosQueryParams(BaseModel):
     page: int = Field(default=1, ge=1)
     page_size: int = Field(default=20, ge=1, le=100)
-    q: str | None = Field(default=None, description="Busca textual em id, tipo, subtipo, secretaria, status, situação")
+    q: str | None = Field(
+        default=None,
+        description="Busca textual em id, tipo, subtipo, secretaria, status, situação",
+    )
     tipo: str | None = None
     subtipo: str | None = None
     secretaria: str | None = None

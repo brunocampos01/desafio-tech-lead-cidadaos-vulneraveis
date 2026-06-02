@@ -9,8 +9,8 @@ from fastapi.responses import StreamingResponse
 
 from api.auth.dependencies import require_role
 from api.rbac.models import Role, User
-from api.schemas.chamados import ChamadosQueryParams
 from api.routers.chamados import get_chamados_service
+from api.schemas.chamados import ChamadosQueryParams
 from api.services.chamados import ChamadosService
 
 router = APIRouter(prefix="/api/v1/export", tags=["export"])

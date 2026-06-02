@@ -118,7 +118,12 @@ class DashboardService:
                 count(*) filter (where data_fim is null) as chamados_abertos,
                 round(
                     100.0 * count(*) filter (where resolvido_no_prazo)
-                    / nullif(count(*) filter (where data_fim is not null and prazo_atendimento is not null), 0),
+                    / nullif(
+                        count(*) filter (
+                            where data_fim is not null and prazo_atendimento is not null
+                        ),
+                        0
+                    ),
                     2
                 ) as taxa_resolucao_prazo,
                 round(avg(dias_resolucao) filter (where dias_resolucao is not null), 2)
@@ -146,7 +151,9 @@ class DashboardService:
             f"""
             select
                 count(*) filter (
-                    where data_fim is not null and prazo_atendimento is not null and resolvido_no_prazo
+                    where data_fim is not null
+                        and prazo_atendimento is not null
+                        and resolvido_no_prazo
                 ) as no_prazo,
                 count(*) filter (
                     where data_fim is not null and prazo_atendimento is not null
@@ -199,7 +206,12 @@ class DashboardService:
                 count(*) as total_chamados,
                 round(
                     100.0 * count(*) filter (where resolvido_no_prazo)
-                    / nullif(count(*) filter (where data_fim is not null and prazo_atendimento is not null), 0),
+                    / nullif(
+                        count(*) filter (
+                            where data_fim is not null and prazo_atendimento is not null
+                        ),
+                        0
+                    ),
                     2
                 ) as taxa_resolucao_prazo
             {base}
@@ -477,7 +489,12 @@ class DashboardService:
                     ) as chamados_atrasados,
                     round(
                         100.0 * count(*) filter (where resolvido_no_prazo)
-                        / nullif(count(*) filter (where data_fim is not null and prazo_atendimento is not null), 0),
+                        / nullif(
+                        count(*) filter (
+                            where data_fim is not null and prazo_atendimento is not null
+                        ),
+                        0
+                    ),
                         2
                     ) as taxa_resolucao_prazo
                 {base}
@@ -525,7 +542,12 @@ class DashboardService:
                     ) as chamados_atrasados,
                     round(
                         100.0 * count(*) filter (where resolvido_no_prazo)
-                        / nullif(count(*) filter (where data_fim is not null and prazo_atendimento is not null), 0),
+                        / nullif(
+                        count(*) filter (
+                            where data_fim is not null and prazo_atendimento is not null
+                        ),
+                        0
+                    ),
                         2
                     ) as taxa_resolucao_prazo
                 {base}
@@ -811,7 +833,12 @@ class DashboardService:
                     count(*) as total_chamados,
                     round(
                         100.0 * count(*) filter (where resolvido_no_prazo)
-                        / nullif(count(*) filter (where data_fim is not null and prazo_atendimento is not null), 0),
+                        / nullif(
+                        count(*) filter (
+                            where data_fim is not null and prazo_atendimento is not null
+                        ),
+                        0
+                    ),
                         2
                     ) as taxa_resolucao_prazo,
                     row_number() over (order by {rank_order}) as rn

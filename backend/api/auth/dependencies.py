@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Annotated, Callable
+from collections.abc import Callable
+from typing import Annotated
 
 import jwt
 from fastapi import Depends, HTTPException, status
@@ -25,9 +26,13 @@ async def get_current_user(
     try:
         payload = decode_token(credentials.credentials, settings)
     except jwt.ExpiredSignatureError as exc:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired") from exc
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired"
+        ) from exc
     except jwt.PyJWTError as exc:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from exc
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+        ) from exc
 
     user = rbac_service.get_user(payload["sub"])
     if user is None:
@@ -52,7 +57,9 @@ def require_role(min_role: Role) -> Callable[..., User]:
 
     async def _checker(user: Annotated[User, Depends(get_current_user)]) -> User:
         if ROLE_HIERARCHY[user.role] < ROLE_HIERARCHY[min_role]:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions"
+            )
         return user
 
     return _checker

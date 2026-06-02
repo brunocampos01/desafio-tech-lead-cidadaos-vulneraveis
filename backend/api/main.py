@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from typing import Annotated
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from api.auth.dependencies import get_current_user
 from api.config import get_settings
 from api.dependencies.database import get_reader
-from typing import Annotated
-
-from api.auth.dependencies import get_current_user
 from api.rbac.models import User
 from api.routers import auth, chamados, dashboard, export, meta, users
 from api.schemas.auth import AuthCheckResponse, UserResponse

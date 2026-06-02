@@ -53,7 +53,9 @@ def refresh(
     """Rotaciona refresh token (revoga o anterior e emite novo par)."""
     user = validate_refresh_token(body.refresh_token, settings)
     if user is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
+        )
     revoke_refresh_token(body.refresh_token, settings)
     tokens = issue_token_pair(user, settings)
     return TokenResponse(**tokens)
@@ -101,10 +103,14 @@ def oauth_token(
 ) -> TokenResponse:
     """Troca ``code`` mock por par de tokens (equivalente ao token endpoint OIDC)."""
     if body.grant_type != "authorization_code":
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unsupported grant_type")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Unsupported grant_type"
+        )
     user_id = _MOCK_OAUTH_CODES.get(body.code)
     if user_id is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid authorization code")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid authorization code"
+        )
     user = rbac_service.get_user(user_id)
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")

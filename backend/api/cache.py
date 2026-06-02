@@ -26,7 +26,7 @@ def cache_key(prefix: str, params: dict[str, Any] | None = None) -> str:
     return f"{prefix}:{digest}"
 
 
-def cached(prefix: str, params: dict[str, Any] | None, factory: Callable[[], T]) -> T:
+def cached[T](prefix: str, params: dict[str, Any] | None, factory: Callable[[], T]) -> T:
     key = cache_key(prefix, params)
     if key in _cache:
         return _cache[key]

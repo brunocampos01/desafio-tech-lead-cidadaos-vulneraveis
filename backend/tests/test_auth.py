@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
+
 import jwt
+
+from api.rbac.service import rbac_service
 
 
 def test_login_success(client):
@@ -22,8 +26,8 @@ def test_protected_route_without_token(client):
 
 
 def test_expired_token(client, settings):
-    user = __import__("api.rbac.service", fromlist=["rbac_service"]).rbac_service.list_users()[0]
-    expire = __import__("datetime").datetime.now(__import__("datetime").UTC) - __import__("datetime").timedelta(hours=1)
+    user = rbac_service.list_users()[0]
+    expire = datetime.now(UTC) - timedelta(hours=1)
     payload = {
         "sub": user.id,
         "email": user.email,

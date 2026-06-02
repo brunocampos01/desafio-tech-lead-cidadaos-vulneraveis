@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime, timedelta
-
-import jwt
 import pytest
 from fastapi.testclient import TestClient
 
-from api.auth.jwt_validator import create_access_token, issue_token_pair
+from api.auth.jwt_validator import create_access_token
 from api.config import Settings, get_settings
 from api.main import app
 from api.rbac.service import DEFAULT_USERS, rbac_service

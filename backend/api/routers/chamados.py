@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 
 from api.auth.dependencies import require_role
 from api.config import Settings, get_settings
-from api.dependencies.database import DuckDBReader, get_reader
+from api.dependencies.database import get_reader
 from api.rbac.models import Role, User
 from api.schemas.chamados import ChamadosQueryParams, FilterOptions, PaginatedChamados
 from api.services.chamados import ChamadosService
