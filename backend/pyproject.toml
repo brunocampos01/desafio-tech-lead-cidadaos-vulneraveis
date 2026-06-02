@@ -1,0 +1,28 @@
+# Runtime deps are pinned in ../requirements.txt (repo root).
+[project]
+name = "pic-backend"
+version = "0.1.0"
+description = "PIC / 1746 monitoring API"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.6.0",
+    "polars>=1.12.0",
+    "duckdb>=1.1.0",
+    "pyjwt>=2.9.0",
+    "cachetools>=5.5.0",
+    "python-multipart>=0.0.12",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
