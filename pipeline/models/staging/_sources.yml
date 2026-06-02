@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw 1746 chamado exports from BigQuery or synthetic sample
+    tables:
+      - name: chamado
+        description: Municipal service calls (1746)
+        loaded_at_field: data_particao

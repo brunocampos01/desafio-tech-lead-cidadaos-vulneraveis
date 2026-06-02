@@ -1,0 +1,8 @@
+pic_1746:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../data/pic.duckdb
+      schema: main
+      threads: 4

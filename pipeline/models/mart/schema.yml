@@ -1,0 +1,116 @@
+version: 2
+
+models:
+  - name: stg_chamado
+    description: Cleaned 1746 chamados with partition filter >= 2023-01-01
+    columns:
+      - name: id_chamado
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: data_particao
+        tests:
+          - not_null
+
+  - name: int_chamados_enriched
+    description: All chamados with secretaria, SLA metrics, and geo enrichment
+    columns:
+      - name: id_chamado
+        tests:
+          - unique
+          - not_null
+      - name: secretaria
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['SMS', 'SME', 'SMAS', 'Outros']
+
+  - name: int_pic_chamados
+    description: PIC scope (SMS, SME, SMAS) — base for dashboard marts
+    columns:
+      - name: secretaria
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['SMS', 'SME', 'SMAS']
+
+  - name: mart_chamados
+    description: Detail table for API list/search endpoints
+    columns:
+      - name: id_chamado
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_dashboard_by_secretaria
+    description: KPI breakdown by PIC secretaria (SMS, SME, SMAS)
+    columns:
+      - name: secretaria
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['SMS', 'SME', 'SMAS']
+
+  - name: mart_dashboard_pic_kpis
+    description: Single-row PIC KPI summary for dashboard and data freshness meta
+    columns:
+      - name: total_chamados
+        tests:
+          - not_null
+
+  - name: mart_dashboard_pic_backlog
+    description: Open calls backlog metrics for PIC scope (single row)
+
+  - name: mart_dashboard_pic_sla_breakdown
+    description: SLA outcome composition for PIC scope (single row)
+
+  - name: mart_dashboard_pic_temporal
+    description: Monthly time series for PIC dashboard charts
+    columns:
+      - name: periodo
+        tests:
+          - not_null
+      - name: total_chamados
+        tests:
+          - not_null
+
+  - name: mart_dashboard_top_tipos_pic
+    description: Top 10 tipos by volume in PIC scope
+    columns:
+      - name: tipo
+        tests:
+          - not_null
+
+  - name: mart_dashboard_pic_by_subprefeitura
+    description: PIC subprefeituras with worst on-time rate (bottom 12 by taxa_resolucao_prazo)
+
+  - name: mart_dashboard_pic_subprefeitura_x_secretaria
+    description: PIC volume matrix subprefeitura x secretaria
+
+  - name: mart_dashboard_pic_atrasos_subpref_por_secretaria
+    description: Top 5 subprefeituras with worst on-time rate per PIC secretaria
+
+  - name: mart_dashboard_pic_atrasos_subpref_orgao
+    description: Top 3 orgaos executores por share de atrasos em cada subprefeitura x secretaria
+
+  - name: mart_dashboard_pic_by_regiao_atrasos
+    description: PIC regioes administrativas with worst on-time rate (bottom 10)
+
+  - name: mart_dashboard_pic_regiao_x_secretaria_vol
+    description: PIC volume matrix regiao administrativa x secretaria (all eixos)
+
+  - name: mart_dashboard_pic_atrasos_regiao_por_secretaria
+    description: Top 5 regioes administrativas with worst on-time rate per PIC secretaria
+
+  - name: mart_dashboard_pic_atrasos_regiao_orgao
+    description: Top 3 orgaos executores por share de atrasos em cada regiao x secretaria
+
+  - name: mart_dashboard_pic_by_categoria
+    description: PIC volume by categoria
+
+  - name: mart_dashboard_pic_pressao_reclamacoes
+    description: PIC reclamacoes pressure by regiao
+
+  - name: mart_dashboard_pic_pressao_reclamacoes_subprefeitura
+    description: PIC reclamacoes pressure by subprefeitura
