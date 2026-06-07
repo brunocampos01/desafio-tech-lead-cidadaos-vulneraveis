@@ -15,6 +15,9 @@ class DuckDBReader:
         self.settings = settings
         self._conn: duckdb.DuckDBPyConnection | None = None
         # DuckDBPyConnection não é thread-safe; uvicorn atende requests em paralelo.
+        # shared DuckDB connection to avoid race conditions
+        # Only one thread can execute SQL 
+        # Can a dashboard execute multiple queries? Yes, but in serial
         self._lock = threading.Lock()
 
     @property
@@ -54,7 +57,6 @@ class DuckDBReader:
 # Precisa ficar no MÓDULO (fora da função); 
 # NOTE: antes estava dentro da função o q fazia toda chamada recria o reader.
 _reader: DuckDBReader | None = None
-
 
 def get_reader(settings: Settings) -> DuckDBReader:
     """Retorna o ``DuckDBReader`` compartilhado do processo (cria na primeira chamada).
