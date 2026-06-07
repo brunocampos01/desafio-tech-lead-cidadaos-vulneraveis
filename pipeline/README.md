@@ -16,7 +16,7 @@ flowchart TB
   CSV["seeds/secretaria_tipo_mapping.csv"]
   CSV -->|dbt seed| SEED[(main.secretaria_tipo_mapping)]
 
-  RAW --> STG[staging views<br/>stg_chamado · stg_bairro · stg_regiao]
+  RAW --> STG[staging views<br/>stg_chamado · stg_bairro]
 
   STG --> INT[int_chamados_enriched]
   SEED -->|"consumo: ref() + LEFT JOIN<br/>chamado.tipo → secretaria"| INT
