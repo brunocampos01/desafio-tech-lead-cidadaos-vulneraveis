@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: raw
-    description: Raw 1746 chamado exports from BigQuery or synthetic sample
+    description: Raw 1746 chamado exports from BigQuery
     tables:
       - name: chamado
         description: Municipal service calls (1746)

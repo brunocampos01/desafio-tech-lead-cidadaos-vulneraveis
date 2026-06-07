@@ -1,6 +1,3 @@
--- Requer Parquet com colunas do export completo (extract_bigquery.py).
--- Parquets antigos (11 colunas) devem ser re-exportados antes do dbt run.
-
 with source as (
     select * from read_parquet('../data/raw/chamado.parquet')
 ),

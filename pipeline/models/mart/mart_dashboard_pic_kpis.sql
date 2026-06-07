@@ -1,6 +1,5 @@
 -- Grain global (1 linha) · fonte int_pic_chamados
 -- Cards (dashboard-view.tsx): Demandas intersetoriais, Encerradas, No prazo (PIC), Tempo médio de resolução
--- Meta: atualizado_em → GET /meta/data + data-freshness.tsx
 
 select
     count(*) as total_chamados,

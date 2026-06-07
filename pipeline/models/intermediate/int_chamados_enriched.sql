@@ -63,7 +63,7 @@ geo_via_id_bairro as (
     inner join bairros_com_poligono as b on c.id_bairro = b.id_bairro
 ),
 
--- Preferência 2: ponto (lon/lat) dentro do polígono do bairro, só quando o id não resolveu
+-- Preferência 2 (fallback): ponto (lon/lat) dentro do polígono do bairro, só quando o id não resolveu
 chamados_para_geo_por_coordenada as (
     select c.*
     from chamados_com_metricas as c
@@ -105,23 +105,12 @@ geo_unificado as (
     select * from geo_via_id_bairro
     union all
     select * from geo_via_coordenada
-),
-
-regiao_administrativa_mestre as (
-    select
-        nome as regiao_administrativa,
-        ap_sms
-    from {{ ref('stg_regiao_administrativa') }}
-    where nome is not null
 )
 
 select
     c.*,
     g.subprefeitura,
     g.regiao_administrativa,
-    g.area_planejamento,
-    rm.ap_sms
+    g.area_planejamento
 from chamados_com_metricas as c
 left join geo_unificado as g on c.id_chamado = g.id_chamado
-left join regiao_administrativa_mestre as rm
-    on g.regiao_administrativa = rm.regiao_administrativa
