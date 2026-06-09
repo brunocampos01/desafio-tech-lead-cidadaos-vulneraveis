@@ -17,8 +17,7 @@ Todas as configurações abaixo são campos da classe `Settings` em [`api/config
 
 ### De onde vêm os valores (ordem de prioridade)
 1. **Variáveis de ambiente** do sistema (`export DUCKDB_PATH=...`)
-2. Arquivo **`.env`** na pasta de trabalho ao subir o uvicorn (geralmente `backend/.env`), se existir
-3. **Defaults** definidos em `api/config.py`, se nada for informado
+2. **Defaults** definidos em `api/config.py`, se nada for informado
 
 ## API — contrato
 
@@ -88,8 +87,6 @@ GET /api/v1/export?secretaria=SMAS&situacao=Resolvido
 Endpoints mock: `POST /auth/token`, `POST /auth/refresh`, `POST /auth/logout`, `GET /auth/me`, `GET /auth/check`, `GET /api/v1/auth`. Usuários de teste, RBAC, fluxo e Keycloak: [`docs/decisoes.md`](../docs/decisoes.md).
 
 ## Atendimento aos requisitos de frontend
-
-O frontend consome **somente** esta API (HTTP + Bearer). Os itens abaixo correspondem ao **§3 API** do enunciado do desafio.
 
 | Requisito (enunciado) | Implementação |
 |-----------------------|---------------|
