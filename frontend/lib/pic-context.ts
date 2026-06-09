@@ -38,13 +38,13 @@ export const PIC_EIXOS = [
 ] as const;
 
 export const PIC_DATA_NOTE =
-  "Neste desafio, demandas do 1746 mapeadas para SMS, SME e SMAS substituem registros sensíveis de beneficiários. O painel mostra só esse recorte intersetorial — não inclui infraestrutura urbana (iluminação, buracos, trânsito etc.).";
+  "Neste desafio, demandas do 1746 mapeadas para SMS, SME e SMAS substituem registros sensíveis de beneficiários. O painel mostra só esse filtro intersetorial — não inclui infraestrutura urbana (iluminação, buracos, trânsito etc.).";
 
 export const PIC_KPI_GUIDE = [
   {
     titulo: "Demandas intersetoriais",
     leitura:
-      "Volume total de chamados no recorte PIC. Use como linha de base antes de filtrar por secretaria, tipo ou período.",
+      "Volume total de chamados no filtro PIC. Use como linha de base antes de filtrar por secretaria, tipo ou período.",
     insight: "Crescimento sustentado pode indicar maior procura pelos serviços ou mudança no mapeamento de tipos.",
   },
   {

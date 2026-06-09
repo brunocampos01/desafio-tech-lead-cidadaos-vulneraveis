@@ -407,7 +407,7 @@ export function DashboardView({ data }: { data: DashboardData }) {
         <Card>
           <CardHeader>
             <CardTitle>Composição SLA (Acordo de Nível de Serviço)</CardTitle>
-            <p className="text-sm text-muted-foreground">Recorte intersetorial (SMS · SME · SMAS)</p>
+            <p className="text-sm text-muted-foreground">Filtro intersetorial (SMS · SME · SMAS)</p>
           </CardHeader>
           <CardContent className="h-80">
             <ResponsiveContainer width="100%" height="100%">

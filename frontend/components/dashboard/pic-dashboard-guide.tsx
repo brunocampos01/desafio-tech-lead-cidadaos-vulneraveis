@@ -111,7 +111,7 @@ export function PicDashboardGuide() {
           </ul>
           <p className="mt-3 text-xs">
             Aplique os filtros na barra acima do painel (secretaria, tipo, datas, busca). A página{" "}
-            <strong className="text-foreground">Chamados</strong> exporta o recorte filtrado em CSV.
+            <strong className="text-foreground">Chamados</strong> exporta os dados filtrados em CSV.
           </p>
         </GuideSection>
       </CardContent>

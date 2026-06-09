@@ -104,7 +104,7 @@ export function DashboardAtrasosPorSecretariaCard({
                 {label}
               </h3>
               {items.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Sem dados no recorte.</p>
+                <p className="text-sm text-muted-foreground">Sem dados no filtro.</p>
               ) : (
                 <ol className="space-y-3">
                   {items.map((row, index) => (
