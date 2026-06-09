@@ -1,4 +1,4 @@
--- Grain tipo + secretaria · top 10 por volume · fonte int_pic_chamados
+-- Grain tipo + secretaria · top 10 por volume · fonte int_chamados_enriched
 -- Card (dashboard-view.tsx): Principais tipos intersetoriais — barras horizontais
 
 with contagem_por_tipo as (
@@ -6,7 +6,7 @@ with contagem_por_tipo as (
         tipo,
         secretaria,
         count(*) as total_chamados
-    from {{ ref('int_pic_chamados') }}
+    from {{ ref('int_chamados_enriched') }}
     where tipo is not null
     group by 1, 2
 ),

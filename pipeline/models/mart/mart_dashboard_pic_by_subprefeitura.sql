@@ -1,4 +1,4 @@
--- Grain subprefeitura (territorio) · top 10 piores taxa no prazo · fonte int_pic_chamados
+-- Grain subprefeitura (territorio) · top 10 piores taxa no prazo · fonte int_chamados_enriched
 -- Card (dashboard-allocation-section.tsx): Subprefeituras com mais atrasos em chamados — TerritorialDelaysChart
 
 with por_subprefeitura as (
@@ -6,7 +6,7 @@ with por_subprefeitura as (
         subprefeitura as territorio,
         count(*) as total_chamados,
         {{ agg_taxa_resolucao_prazo_pct() }} as taxa_resolucao_prazo
-    from {{ ref('int_pic_chamados') }}
+    from {{ ref('int_chamados_enriched') }}
     where subprefeitura is not null
     group by 1
 ),

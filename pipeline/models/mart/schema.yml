@@ -14,21 +14,12 @@ models:
           - not_null
 
   - name: int_chamados_enriched
-    description: All chamados with secretaria, SLA metrics, and geo enrichment
+    description: PIC chamados (SMS, SME, SMAS) with secretaria, SLA metrics, and geo enrichment — base for all marts
     columns:
       - name: id_chamado
         tests:
           - unique
           - not_null
-      - name: secretaria
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['SMS', 'SME', 'SMAS', 'Outros']
-
-  - name: int_pic_chamados
-    description: PIC scope (SMS, SME, SMAS) — base for dashboard marts
-    columns:
       - name: secretaria
         tests:
           - not_null

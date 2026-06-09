@@ -1,4 +1,4 @@
--- Grain subprefeitura × secretaria · top 5 piores taxa / secretaria · fonte int_pic_chamados
+-- Grain subprefeitura × secretaria · top 5 piores taxa / secretaria · fonte int_chamados_enriched
 -- Card (dashboard-atrasos-por-secretaria-card.tsx via allocation-section): Secretarias e subprefeituras com mais atrasos
 
 with por_subprefeitura as (
@@ -8,7 +8,7 @@ with por_subprefeitura as (
         count(*) as total_chamados,
         {{ agg_chamados_atrasados() }} as chamados_atrasados,
         {{ agg_taxa_resolucao_prazo_pct() }} as taxa_resolucao_prazo
-    from {{ ref('int_pic_chamados') }}
+    from {{ ref('int_chamados_enriched') }}
     where subprefeitura is not null
     group by 1, 2
 ),

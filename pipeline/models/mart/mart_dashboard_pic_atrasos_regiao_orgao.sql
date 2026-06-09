@@ -1,4 +1,4 @@
--- Grain regiao × secretaria × orgao · top 3 órgãos por fatia de atraso · fonte int_pic_chamados
+-- Grain regiao × secretaria × orgao · top 3 órgãos por fatia de atraso · fonte int_chamados_enriched
 -- Card (dashboard-atrasos-por-secretaria-card.tsx): coluna “unidades organizacionais” no ranking região
 
 with chamados_atrasados as (
@@ -6,7 +6,7 @@ with chamados_atrasados as (
         secretaria,
         regiao_administrativa as regiao,
         nome_unidade_organizacional as orgao
-    from {{ ref('int_pic_chamados') }}
+    from {{ ref('int_chamados_enriched') }}
     where regiao_administrativa is not null
       and nome_unidade_organizacional is not null
       and {{ chamado_atrasado() }}

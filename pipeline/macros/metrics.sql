@@ -19,7 +19,3 @@ round(
 {% macro agg_chamados_atrasados() %}
 count(*) filter (where {{ chamado_atrasado() }})
 {% endmacro %}
-
-{% macro agg_tempo_medio_resolucao_dias() %}
-round(avg(dias_resolucao) filter (where dias_resolucao is not null), 2)
-{% endmacro %}

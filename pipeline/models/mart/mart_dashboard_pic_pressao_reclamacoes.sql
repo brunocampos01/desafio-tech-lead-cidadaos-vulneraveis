@@ -1,11 +1,11 @@
--- Grain regiao_administrativa (territorio) · top 12 pressão reclamações · fonte int_pic_chamados
+-- Grain regiao_administrativa (territorio) · top 12 pressão reclamações · fonte int_chamados_enriched
 -- Card (dashboard-pressao-reclamacoes-card.tsx): Pressão por reclamações (região) — seção Alocação de recursos
 
 with pressao_por_regiao as (
     select
         regiao_administrativa as territorio,
         count(*) filter (where reclamacoes >= 2) as com_reclamacoes_repetidas
-    from {{ ref('int_pic_chamados') }}
+    from {{ ref('int_chamados_enriched') }}
     where regiao_administrativa is not null
       and reclamacoes is not null
     group by 1

@@ -52,6 +52,13 @@ chamados_com_metricas as (
     left join tipo_para_secretaria as map on c.tipo = map.tipo
 ),
 
+-- Filtro PIC (SMS · SME · SMAS) aplicado aqui, antes do join
+chamados_pic as (
+    select *
+    from chamados_com_metricas
+    where secretaria in ('SMS', 'SME', 'SMAS')
+),
+
 -- Preferência 1: bairro cadastrado no chamado (id_bairro)
 geo_via_id_bairro as (
     select
@@ -59,14 +66,14 @@ geo_via_id_bairro as (
         b.subprefeitura,
         b.regiao_administrativa,
         b.area_planejamento
-    from chamados_com_metricas as c
+    from chamados_pic as c
     inner join bairros_com_poligono as b on c.id_bairro = b.id_bairro
 ),
 
 -- Preferência 2 (fallback): ponto (lon/lat) dentro do polígono do bairro, só quando o id não resolveu
 chamados_para_geo_por_coordenada as (
     select c.*
-    from chamados_com_metricas as c
+    from chamados_pic as c
     left join geo_via_id_bairro as g on c.id_chamado = g.id_chamado
     where g.id_chamado is null
       and c.longitude is not null
@@ -112,5 +119,5 @@ select
     g.subprefeitura,
     g.regiao_administrativa,
     g.area_planejamento
-from chamados_com_metricas as c
+from chamados_pic as c
 left join geo_unificado as g on c.id_chamado = g.id_chamado

@@ -1,4 +1,4 @@
--- Grain global (1 linha) · fonte int_pic_chamados
+-- Grain global (1 linha) · fonte int_chamados_enriched
 -- Cards (dashboard-view.tsx): Demandas em aberto, Idade média (abertas)
 
 select
@@ -8,4 +8,4 @@ select
         filter (where data_fim is null and data_inicio is not null),
         1
     ) as idade_media_aberto_dias
-from {{ ref('int_pic_chamados') }}
+from {{ ref('int_chamados_enriched') }}

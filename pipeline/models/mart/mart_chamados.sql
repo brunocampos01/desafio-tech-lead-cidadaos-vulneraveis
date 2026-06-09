@@ -1,4 +1,4 @@
--- Fato detalhe · grain id_chamado · fonte int_chamados_enriched (inclui secretaria Outros)
+-- Fato detalhe · grain id_chamado · fonte int_chamados_enriched (filtro PIC: SMS · SME · SMAS)
 
 select
     id_chamado,
