@@ -2,7 +2,7 @@
 
 Documento de **por quê** (tradeoffs e escolhas).
 
-- [`pipeline/README.md`](../pipeline/README.md) — arquitetura (fluxo BQ → dbt → DuckDB), modelagem e ER, tabelas `main_mart`, métricas e macros, mapeamento `tipo` → `secretaria`, testes dbt
+- [`pipeline/README.md`](../pipeline/README.md) — arquitetura (fluxo BQ → dbt → DuckDB), modelagem e ER, tabelas `main_mart`, métricas, testes dbt
 - [`backend/README.md`](../backend/README.md) — variáveis de ambiente, contrato da API (endpoints, query params, tabelas dbt), autenticação mock
 - [`frontend/README.md`](../frontend/README.md) — stack, variáveis de ambiente, arquitetura e estrutura de arquivos, `api-client.ts`, páginas (`/login`, `/dashboard`, `/chamados`, `/usuarios`), tema claro/escuro
 
@@ -11,9 +11,10 @@ Documento de **por quê** (tradeoffs e escolhas).
 ### Pipeline
 | Decisão | Alternativas | Por quê |
 |---|---|---|
-| dbt + DuckDB | dbt + SQLite, scripts Polars | <ul><li>Alinha com convenções dados.rio</li><li>DuckDB escala melhor que SQLite</li><li>dbt testa contratos</li></ul> |
-| Seed CSV para `tipo`→`secretaria` | CASE inline no SQL | Versionável e extensível sem alterar SQL |
-| Snapshot de schema BQ (`generate_schema_docs.py`) | `SELECT *` no console / adivinhar colunas | Valida nomes reais no `datario` antes do export caro; ver §2.1 |
+| dbt + DuckDB | dbt + SQLite, scripts Polars | <ul><li>DuckDB eh analitico</li><li>dbt testa contratos</li></ul> |
+| Download via `basedosdados` (`read_sql`) | Client `google-cloud-bigquery` direto, `bq` CLI | <ul><li>Biblioteca oficial do ecossistema **dados.rio**</li><li>`read_sql` resolve autenticação + billing (`billing_project_id`) num único passo e retorna DataFrame pronto para gravar Parquet</li><li>Abstrai o boilerplate do client BigQuery (job, slots, paginação)</li></ul> |
+| Seed CSV para `tipo`→`secretaria` | CASE inline no SQL | Versionável sem alterar SQL |
+| Snapshot de schema BQ (`generate_schema_docs.py`) | `SELECT *` no console | Valida nomes e descricoes|
 
 ### API
 | Decisão | Alternativas | Por quê |
@@ -134,7 +135,7 @@ sequenceDiagram
 
 **Tipos omitidos da tabela:**
 
-- **Iluminação, Buraco, Lixo, Árvore** — infraestrutura urbana; fora do recorte PIC (Saúde, Educação, Assistência Social).
+- **Iluminação, Buraco, Lixo, Árvore** — infraestrutura urbana; fora do filtro PIC (Saúde, Educação, Assistência Social).
 - **Denúncia** — rótulo genérico de confiança baixa.
 
 ### 2.1. Validação de schema BigQuery (`generate_schema_docs.py`)
@@ -150,27 +151,22 @@ pip install -r requirements.txt   # se ainda não instalado
 python pipeline/scripts/generate_schema_docs.py --billing-project desafio-tech-lead-cidadaos
 ```
 
-Saída: [`docs/bigquery_schemas.md`](bigquery_schemas.md) (raiz do repositório, commitado).
+Output: [`docs/bigquery_schemas.md`](bigquery_schemas.md)
 
 #### O que o script faz
 
 1. Catálogo das cinco tabelas citadas no enunciado:
-   - `datario.adm_central_atendimento_1746.chamado`
-   - `datario.dados_mestres.{bairro, regiao_administrativa, area_planejamento, subprefeitura}`
 2. Para cada tabela, executa SQL em `INFORMATION_SCHEMA.COLUMNS` + `COLUMN_FIELD_PATHS` (via **basedosdados** `read_sql`).
-3. Monta Markdown com **nome**, **tipo** e **descrição oficial** de cada coluna e grava em `docs/bigquery_schemas.md`.
+3. Monta Markdown com **nome**, **tipo** e **descrição oficial**
 
 #### Por que foi útil (problema do enunciado × datalake real)
 
 Na prática o datalake **datario** (maio/2026) não é um espelho literal do texto do enunciado.
 
-O enunciado cita a coluna `prazo_atendimento`, mas no `datario` o campo equivalente chama-se **`data_alvo_finalizacao`** (data prevista de atendimento). No export, a query usa `data_alvo_finalizacao AS prazo_atendimento`; no dbt, o pipeline mantém o nome `prazo_atendimento` nas camadas seguintes.
+O enunciado cita a coluna `prazo_atendimento`, mas no `datario` o campo equivalente chama-se **`data_alvo_finalizacao`** (data prevista de atendimento).
+
 
 ## 3. Agregações do dashboard (dbt vs API)
-
-### O que o dbt materializa
-
-Camada de transformação → `int_chamados_enriched` (métricas por linha: `dias_resolucao`, `resolvido_no_prazo`, `secretaria`).
 
 ### Comportamento da API
 
@@ -209,7 +205,7 @@ Implementação: `api/rbac/models.py` (`Role`, `ROLE_HIERARCHY`) e `api/rbac/ser
 
 | Item | Planejado | Entregue | Por quê / impacto |
 |------|-----------|----------|-------------------|
-| **Dashboard por secretaria** | Várias abas (ex.: SMS, SME, SMAS), cada uma com KPIs e gráficos próprios | Uma aba **Dashboard** com recorte intersetorial PIC, filtros em cascata e blocos territoriais/alocação na mesma página | **Tempo** foi o principal limitante: implementar tudo o que se queria (pipeline completo, auth/RBAC, export, múltiplas visões) competiu com dividir o frontend em mais superfícies. Priorizei um dashboard único coerente com os marts antes de fragmentar por eixo. |
+| **Dashboard por secretaria** | Várias abas (ex.: SMS, SME, SMAS), cada uma com KPIs e gráficos próprios | Uma aba **Dashboard** com filtro intersetorial PIC, filtros em cascata e blocos territoriais/alocação na mesma página | **Tempo** foi o principal limitante: implementar tudo o que se queria (pipeline completo, auth/RBAC, export, múltiplas visões) competiu com dividir o frontend em mais superfícies. Priorizei um dashboard único coerente com os marts antes de fragmentar por eixo. |
 
 ### Ambiente local
 
@@ -217,7 +213,11 @@ Gostaria de ter preparado o ambiente em **Docker Compose** — um `docker compos
 
 ### Contexto de negócio
 
-O programa PIC e o dataset 1746 vi pela primeira vez usando a documentação pública. Vejo que as entregas deveriam ter algum stackholder para avalisar se faz sentido o que estou entregando agora.
+O programa PIC e o dataset 1746 vi pela primeira vez usando a documentação pública. Vejo que as entregas deveriam ter algum stackholder para avaliar se faz sentido o que estou entregando agora.
+
+### Warnings nos testes de backend
+
+Ao rodar `pytest tests/` no backend, os testes **passam** (26 passed), mas há **48 warnings** que **não deu tempo de validar. Pelo que observei até agora: a maioria é `InsecureKeyLengthWarning` do PyJWT.
 
 
 ## 6. Integração Keycloak
@@ -284,13 +284,13 @@ _duckdb.InvalidInputException: Invalid Input Error: There is no query result
 
 ## 8. Além do enunciado
 
-Itens que o desafio não exigia explicitamente, mas foram entregues para aproximar o proxy 1746 do monitoramento intersetorial PIC.
+Itens que o desafio não exigia explicitamente.
 
-**Pipeline e dados**
+**Pipeline de dados**
 
 - Enriquecimento geo (`id_bairro` + join espacial por coordenadas) e export das cinco tabelas `dados_mestres` além de `chamado`
-- Recorte PIC (`SMS`, `SME`, `SMAS`) e dezenas de marts além do mínimo (KPIs + temporal + por secretaria): backlog, composição SLA, top tipos, territorial, atrasos por subprefeitura/região × secretaria, órgão executor, pressão por reclamações, categoria
-- Script `generate_schema_docs.py` e `docs/bigquery_schemas.md` para validar colunas reais no `datario` antes do export
+- Filtro PIC (`SMS`, `SME`, `SMAS`) e dezenas de marts além do mínimo (KPIs + temporal + por secretaria): backlog, composição SLA, top tipos, territorial, atrasos por subprefeitura/região × secretaria, órgão executor, pressão por reclamações, categoria
+- Script `generate_schema_docs.py` e `docs/bigquery_schemas.md` para validar colunas
 
 **API**
 
@@ -306,4 +306,4 @@ Itens que o desafio não exigia explicitamente, mas foram entregues para aproxim
 **OPS**
 
 - CI (`.github/workflows/ci.yml`: pytest auth/RBAC, lint/build frontend)
-- READMEs por camada (`pipeline/`, `backend/`, `frontend/`) com contratos e mapa de atendimento ao enunciado
+- READMEs por camada (`pipeline/`, `backend/`, `frontend/`)

@@ -1,6 +1,6 @@
 # Desafio Técnico - Tech Lead — Programa Pequenos Cariocas (PIC)
 
-Sistema de monitoramento de chamados **1746**: pipeline dbt → API FastAPI → frontend Next.js.
+Sistema de monitoramento de chamados.
 
 ![Dashboard — Programa Pequenos Cariocas](docs/tela_dash.png)
 
@@ -11,7 +11,7 @@ Decisões técnicas detalhadas: [docs/decisoes.md](docs/decisoes.md)
 - **Python 3.12 ou 3.13** — dependências em [requirements.txt](requirements.txt) (pipeline, backend, BigQuery, testes)
 - **Node.js 20+** (frontend)
 
-## Como rodar (centralizado): Quick start (local)
+## Como rodar
 
 Se ainda não tiver os dados em `data/raw/`, veja [Download de dados no BigQuery](#download-de-dados-no-bigquery).
 
@@ -28,8 +28,10 @@ pip install -r requirements.txt
 **dbt (a partir de `pipeline/`):**
 
 ```bash
+source .venv/bin/activate
+
 cd pipeline
-dbt seed    # secretaria_tipo_mapping
+dbt seed --full-refresh   # secretaria_tipo_mapping
 dbt run
 dbt test
 ```
@@ -37,9 +39,10 @@ dbt test
 **Output:** `data/pic.duckdb`
 
 ### 2. Backend
-
+Terminal 1
 ```bash
 source .venv/bin/activate
+
 cd backend
 DUCKDB_PATH=data/pic.duckdb uvicorn api.main:app --reload --port 8000
 ```
@@ -47,8 +50,10 @@ DUCKDB_PATH=data/pic.duckdb uvicorn api.main:app --reload --port 8000
 OpenAPI: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ### 3. Frontend
-
+Terminal 2
 ```bash
+source .venv/bin/activate
+
 cd frontend
 npm install
 npm run dev
@@ -57,28 +62,10 @@ npm run dev
 UI: [http://localhost:3000](http://localhost:3000)
 
 ### Parar e reiniciar serviços
-
-**Parar tudo (dev local — portas 8000 e 3000):**
+Parar tudo (dev local — portas 8000 e 3000)
 
 ```bash
 kill -9 $(lsof -ti :8000) $(lsof -ti :3000) 2>/dev/null
-```
-
-**Reiniciar (dois terminais, na raiz do repo):**
-
-Terminal 1 — backend:
-
-```bash
-source .venv/bin/activate
-cd backend
-DUCKDB_PATH=data/pic.duckdb uvicorn api.main:app --reload --port 8000
-```
-
-Terminal 2 — frontend:
-
-```bash
-cd frontend
-npm run dev
 ```
 
 ## Usuários de teste
@@ -93,28 +80,18 @@ npm run dev
 
 ## Download de dados no BigQuery
 
-### Passo a passo
-
 #### 1. Projeto GCP e billing
 
 1. [Google Cloud Console](https://console.cloud.google.com/) — criar/selecionar projeto
 2. Vincular conta de faturamento
 
-#### 2. `gcloud` (macOS)
+#### 2. Autenticação
 
-```bash
-brew install --cask google-cloud-sdk
-source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
-
-gcloud auth login
-gcloud auth application-default login
-gcloud config set project <PROJECT_ID>
-gcloud auth application-default set-quota-project <PROJECT_ID>
-```
+A extração usa a lib `basedosdados`. Na **primeira execução** abre um fluxo OAuth no navegador ("PyData Google Auth") e salva as credenciais em `~/.config/pydata/pydata_google_credentials.json`; as próximas execuções reaproveitam o cache.
 
 #### 3. Download
 
-Extraia somente o bruto no BigQuery (data_particao >= '2023-01-01').
+O [`extract_bigquery.py`](pipeline/scripts/extract_bigquery.py) extrai só o bruto (`data_particao >= '2023-01-01'`) para `data/raw/*.parquet`. Tabelas cujo Parquet já existe em `data/raw/` são **puladas** — a re-execução é idempotente;
 
 ```bash
 source .venv/bin/activate
@@ -130,7 +107,7 @@ source .venv/bin/activate
 python pipeline/scripts/generate_schema_docs.py --billing-project <PROJECT_ID>
 ```
 
-Gera [docs/bigquery_schemas.md](docs/bigquery_schemas.md) (colunas, tipos e descrições das 5 tabelas acima).
+Gera [docs/bigquery_schemas.md](docs/bigquery_schemas.md)
 
 ## Testes (local)
 
